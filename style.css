@@ -1,0 +1,402 @@
+
+/* CONFIGURAÇÕES GERAIS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #101010;
+    color: white;
+    font-family: Arial, sans-serif;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    gap: 30px;
+
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 42px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+p {
+    color: #999;
+    font-size: 16px;
+}
+
+
+/* BOTÃO */
+
+button {
+    background: linear-gradient(135deg, #292929, #111);
+    color: white;
+
+    border: 2px solid #555;
+    border-radius: 15px;
+
+    padding: 30px 70px;
+
+    font-size: 25px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    box-shadow: 0 0 20px #000;
+}
+
+button:hover {
+    transform: scale(1.08);
+    border-color: white;
+    box-shadow: 0 0 25px #555;
+}
+
+
+/* CONTAINER DA FOTO */
+
+.foto-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Controle exclusivo da visibilidade */
+.foto-container[hidden] {
+    display: none !important;
+}
+
+.foto-container:not([hidden]) {
+    display: block;
+    animation: aparecerFoto 0.9s cubic-bezier(.15, .8, .25, 1) both;
+}
+
+
+/* BRILHO DE FOGO */
+
+.foto-container::before {
+    content: "";
+
+    position: absolute;
+    inset: -25px;
+
+    background: radial-gradient(
+        ellipse,
+        rgba(255, 100, 20, 0.7),
+        rgba(255, 40, 0, 0.2),
+        transparent 70%
+    );
+
+    filter: blur(25px);
+    z-index: -1;
+    opacity: 0;
+}
+
+.foto-container:not([hidden])::before {
+    animation: brilhoFogo 1.5s ease-out forwards;
+}
+
+
+/* IMAGEM */
+
+#foto {
+    display: block;
+
+    max-width: 85vw;
+    max-height: 65vh;
+
+    border: 2px solid #777;
+    border-radius: 15px;
+
+    box-shadow: 0 0 50px rgba(255, 80, 0, 0.5);
+}
+
+
+/* ANIMAÇÃO DA FOTO */
+
+@keyframes aparecerFoto {
+
+    0% {
+        opacity: 0;
+        transform: scale(0.01) rotate(-15deg);
+        filter: brightness(8) blur(15px);
+    }
+
+    45% {
+        opacity: 1;
+        transform: scale(1.15) rotate(3deg);
+        filter: brightness(2.5) blur(0);
+    }
+
+    70% {
+        transform: scale(0.94) rotate(-1deg);
+        filter: brightness(1.5);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+        filter: brightness(1);
+    }
+}
+
+
+/* BRILHO */
+
+@keyframes brilhoFogo {
+
+    0% {
+        opacity: 1;
+        transform: scale(0.2);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.4);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+
+/* CAMADA DE EXPLOSÃO */
+
+.explosion-overlay {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: 10;
+
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.explosion-overlay.ativa {
+    visibility: visible;
+}
+
+
+/* CLARÃO */
+
+.flash {
+    position: absolute;
+    inset: 0;
+
+    background: white;
+    opacity: 0;
+}
+
+.explosion-overlay.ativa .flash {
+    animation: clarao 0.65s ease-out forwards;
+}
+
+@keyframes clarao {
+
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    30% {
+        opacity: 0.85;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* ONDA DE CHOQUE */
+
+.shockwave {
+    position: absolute;
+
+    width: 40px;
+    height: 40px;
+
+    left: 50%;
+    top: 50%;
+
+    border: 8px solid white;
+    border-radius: 50%;
+
+    transform: translate(-50%, -50%) scale(0);
+
+    box-shadow: 0 0 25px white, 0 0 60px orange;
+}
+
+.explosion-overlay.ativa .shockwave {
+    animation: onda 0.8s ease-out forwards;
+}
+
+@keyframes onda {
+
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(35);
+        opacity: 0;
+    }
+}
+
+
+/* PARTÍCULAS */
+
+.particle {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: var(--size);
+    height: var(--size);
+
+    border-radius: 50%;
+
+    background: var(--color);
+
+    box-shadow: 0 0 12px var(--color);
+
+    animation: particulas 1.1s ease-out forwards;
+}
+
+@keyframes particulas {
+
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(
+            calc(-50% + var(--x)),
+            calc(-50% + var(--y))
+        ) scale(0);
+
+        opacity: 0;
+    }
+}
+
+
+/* FUMAÇA */
+
+.foto-container::after {
+    content: "";
+
+    position: absolute;
+    inset: -15px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        ellipse,
+        rgba(80, 80, 80, 0.45),
+        rgba(30, 30, 30, 0.2),
+        transparent 70%
+    );
+
+    filter: blur(20px);
+
+    z-index: -2;
+    opacity: 0;
+}
+
+.foto-container:not([hidden])::after {
+    animation: fumaca 1.8s ease-out forwards;
+}
+
+@keyframes fumaca {
+
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    30% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2.5);
+    }
+}
+
+
+/* TREMEDEIRA DA TELA */
+
+body.tremendo {
+    animation: tremor 0.5s linear;
+}
+
+@keyframes tremor {
+
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    10% {
+        transform: translate(-10px, 6px);
+    }
+
+    20% {
+        transform: translate(9px, -7px);
+    }
+
+    30% {
+        transform: translate(-8px, -5px);
+    }
+
+    40% {
+        transform: translate(7px, 8px);
+    }
+
+    50% {
+        transform: translate(-6px, 3px);
+    }
+
+    60% {
+        transform: translate(5px, -6px);
+    }
+
+    70% {
+        transform: translate(-4px, 4px);
+    }
+
+    80% {
+        transform: translate(3px, -3px);
+    }
+
+    90% {
+        transform: translate(-2px, 2px);
+    }
+}
+
+
+/* Garante que a foto desapareça ao receber o atributo hidden */
+#fotoContainer[hidden] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
